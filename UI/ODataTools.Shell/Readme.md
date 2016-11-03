@@ -36,7 +36,7 @@ With this option four types of classes are generated:
 * *BindableBase.cs* - base class which implements the *INotifyPropertyChanged* interface
 * *DtoProxyBase.cs* - base class that acts as a proxy/wrapper for the generated DTO classes which provides functions for the change tracking. This class derives from the generated BindableBase class.
 * *OutputFile.cs* - in this file you can find the generated (simple) DTO classes
-* *OutputFileProxy.cs* - this file contains the proxy classes for the generated DTOs.
+* *OutputFileProxy.cs* - this file contains the proxy classes for the generated DTOs
 
 Here is a small example to illustrate the whole thing:
 
