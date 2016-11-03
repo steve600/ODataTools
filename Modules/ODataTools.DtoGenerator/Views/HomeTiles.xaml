@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="ODataTools.DtoGenerator.Views.HomeTiles"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ODataTools.DtoGenerator.Views"
+             xmlns:inf="clr-namespace:ODataTools.Infrastructure;assembly=ODataTools.Infrastructure"
+             xmlns:infConstants="clr-namespace:ODataTools.Infrastructure.Constants;assembly=ODataTools.Infrastructure"
+             xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:lex="http://wpflocalizeextension.codeplex.com"
+                   lex:LocalizeDictionary.DesignCulture="de-DE"        
+                   lex:ResxLocalizationProvider.DefaultAssembly="ODataTools.DtoGenerator"
+                   lex:ResxLocalizationProvider.DefaultDictionary="Resources"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Label Grid.Row="0" 
+               Style="{StaticResource LabelHeader1}"
+               Content="{lex:Loc DtoGeneratorTiles}" />
+
+        <!-- Tiles -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal">
+            <metro:Tile Title="{lex:Loc DtoGeneratorTitle}" 
+                        Content="{lex:Loc DtoGeneratorDescription}"
+                        Command="{Binding Source={x:Static inf:ApplicationCommands.NavigateToViewCommand}}"
+                        CommandParameter="{x:Static infConstants:ViewNames.DtoGenerator}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        TiltFactor="1"                    
+                        Width="150" 
+                        Height="100" />
+
+            <metro:Tile Title="{lex:Loc DtoGeneratorDataSvcUtilGuiTitle}" 
+                        Content="{lex:Loc DtoGeneratorDataSvcUtilGuiDescription}"
+                        Command="{Binding Source={x:Static inf:ApplicationCommands.NavigateToViewCommand}}"
+                        CommandParameter="{x:Static infConstants:ViewNames.DataSvcUtilGUI}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        TiltFactor="1"                    
+                        Width="150" 
+                        Height="100" />
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>

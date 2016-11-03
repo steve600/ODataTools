@@ -1,0 +1,60 @@
+﻿<metro:MetroWindow x:Class="ODataTools.Shell.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:infConstants="clr-namespace:ODataTools.Infrastructure.Constants;assembly=ODataTools.Infrastructure"
+        xmlns:behaviors="clr-namespace:ODataTools.Shell.Behaviors"
+        behaviors:RegionPopupBehaviors.CreatePopupRegionWithName="{x:Static infConstants:RegionNames.DialogPopupRegion}"
+        behaviors:RegionPopupBehaviors.ContainerWindowStyle="{StaticResource RegionPopupWindowStyle}"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:local="clr-namespace:ODataTools.Shell"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="{Binding Title}"
+        ResizeMode="CanResizeWithGrip"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        WindowStartupLocation="CenterScreen"
+        Height="1024" 
+        Width="1280">
+
+    <!-- LeftWindow Commands -->
+    <metro:MetroWindow.LeftWindowCommands>
+        <metro:WindowCommands x:Name="leftWindowCommandsRegion" />
+    </metro:MetroWindow.LeftWindowCommands>
+
+    <!-- RightWindow Commands -->
+    <metro:MetroWindow.RightWindowCommands>
+        <metro:WindowCommands x:Name="rightWindowCommandsRegion" />
+    </metro:MetroWindow.RightWindowCommands>
+
+    <!-- Flyouts -->
+    <metro:MetroWindow.Flyouts>
+        <metro:FlyoutsControl x:Name="flyoutsRegion" />
+    </metro:MetroWindow.Flyouts>
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <dragablz:TabablzControl x:Name="mainTabControl"
+                                 Grid.Row="0"
+                                 prism:RegionManager.RegionName="{x:Static infConstants:RegionNames.MainRegion}">
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController InterTabClient="{Binding InterTabClient}" />
+            </dragablz:TabablzControl.InterTabController>
+        </dragablz:TabablzControl>
+
+        <!-- StatusBar -->
+        <StatusBar Grid.Row="1">
+            <StatusBarItem Content="{Binding Title}" />
+            <Separator Style="{StaticResource MetroStatusBarSeparator}" />
+            <StatusBarItem Content="{Binding Path=StatusBarMessage, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+        </StatusBar>
+    </Grid>
+
+</metro:MetroWindow>

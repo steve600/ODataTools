@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="ODataTools.ModelVisualizer.Views.HomeTiles"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ODataTools.ModelVisualizer.Views"
+             xmlns:inf="clr-namespace:ODataTools.Infrastructure;assembly=ODataTools.Infrastructure"
+             xmlns:infConstants="clr-namespace:ODataTools.Infrastructure.Constants;assembly=ODataTools.Infrastructure"
+             xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:lex="http://wpflocalizeextension.codeplex.com"
+                   lex:LocalizeDictionary.DesignCulture="de-DE"        
+                   lex:ResxLocalizationProvider.DefaultAssembly="ODataTools.ModelVisualizer"
+                   lex:ResxLocalizationProvider.DefaultDictionary="Resources"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Label Grid.Row="0" 
+               Style="{StaticResource LabelHeader1}"
+               Content="{lex:Loc ModelVisualizerTiles}" />
+
+        <!-- Tiles -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal">
+            <metro:Tile Title="{lex:Loc ModelVisualizerTitle}" 
+                        Content="{lex:Loc ModelVisualizerDescription}"
+                        Command="{Binding Source={x:Static inf:ApplicationCommands.NavigateToViewCommand}}"
+                        CommandParameter="{x:Static infConstants:ViewNames.ModelVisualizer}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        TiltFactor="1"                    
+                        Width="150" 
+                        Height="100" />
+
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>
