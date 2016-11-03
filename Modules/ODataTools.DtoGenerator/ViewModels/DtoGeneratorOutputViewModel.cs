@@ -2,8 +2,6 @@
 using ODataTools.Core.Base;
 using ODataTools.DtoGenerator.Contracts.Enums;
 using ODataTools.DtoGenerator.Events;
-using ODataTools.DtoGenerator.Generator;
-using ODataTools.DtoGenerator.Interfaces;
 using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
 using Prism.Events;
@@ -11,9 +9,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace ODataTools.DtoGenerator.ViewModels

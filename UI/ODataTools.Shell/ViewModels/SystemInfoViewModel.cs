@@ -1,12 +1,12 @@
-﻿using ODataTools.Core.Base;
-using Microsoft.Practices.Unity;
+﻿using Microsoft.Practices.Unity;
+using ODataTools.Core.Base;
+using ODataTools.Infrastructure.SystemInformation;
 using Prism.Events;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using ODataTools.Infrastructure.SystemInformation;
 
 namespace ODataTools.Shell.ViewModels
 {

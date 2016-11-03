@@ -1,9 +1,8 @@
-﻿using ODataTools.Reader.Common.Common;
-using System.Collections.ObjectModel;
+﻿using Microsoft.Data.Edm;
 using ODataTools.ModelVisualizer.Contracts.Model;
-using Microsoft.Data.Edm;
+using ODataTools.Reader.Common.Common;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace ODataTools.Reader.V3.Visualization
 {

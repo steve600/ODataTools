@@ -3,13 +3,7 @@ using ODataTools.Core.Base;
 using ODataTools.DtoGenerator.Generator;
 using ODataTools.DtoGenerator.Interfaces;
 using ODataTools.Infrastructure.Constants;
-using ODataTools.Reader.Common.Common;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ODataTools.DtoGenerator
 {

@@ -2,16 +2,16 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.OData.Edm;
+using ODataTools.DtoGenerator.Contracts;
+using ODataTools.DtoGenerator.Contracts.Enums;
+using ODataTools.DtoGenerator.Contracts.Interfaces;
+using ODataTools.Infrastructure.ExtensionMethods;
 using ODataTools.Reader.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ODataTools.Infrastructure.ExtensionMethods;
-using Microsoft.OData.Edm;
-using ODataTools.DtoGenerator.Contracts;
-using ODataTools.DtoGenerator.Contracts.Enums;
-using ODataTools.DtoGenerator.Contracts.Interfaces;
 
 namespace ODataTools.Reader.V4.Generator
 {

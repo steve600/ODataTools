@@ -1,11 +1,5 @@
-﻿using GraphX.Measure;
-using GraphX.PCL.Common.Models;
-using System;
-using System.Collections.Generic;
+﻿using GraphX.PCL.Common.Models;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ODataTools.ModelVisualizer.Contracts.Model
 {

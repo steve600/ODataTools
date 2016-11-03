@@ -5,23 +5,15 @@ using ODataTools.DtoGenerator.Contracts;
 using ODataTools.DtoGenerator.Contracts.Enums;
 using ODataTools.DtoGenerator.Contracts.Interfaces;
 using ODataTools.DtoGenerator.Events;
-using ODataTools.DtoGenerator.Generator;
-using ODataTools.DtoGenerator.Interfaces;
 using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
-using ODataTools.Reader.Common;
-using ODataTools.Reader.Common.Common;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Xml.Linq;
 
 namespace ODataTools.DtoGenerator.ViewModels
 {

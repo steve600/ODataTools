@@ -5,11 +5,6 @@ using ODataTools.Infrastructure.Constants;
 using ODataTools.Reader.Common.Common;
 using ODataTools.Reader.Services;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ODataTools.Reader
 {

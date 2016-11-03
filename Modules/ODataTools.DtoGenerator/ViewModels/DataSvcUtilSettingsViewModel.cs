@@ -5,17 +5,11 @@ using ODataTools.DtoGenerator.Events;
 using ODataTools.DtoGenerator.Interfaces;
 using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
-using ODataTools.Infrastructure.SystemInformation;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Mvvm;
 using Prism.Regions;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 

@@ -1,13 +1,8 @@
 ﻿using ODataTools.DtoGenerator.Contracts.Enums;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ODataTools.DtoGenerator.Contracts
-{ 
+{
     public class DtoGeneratorSettings : BindableBase
     {
         private string targetNamespace = "MyNamespace";

@@ -2,11 +2,10 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.Rename;
-using System.Collections.Generic;
-using System.IO;
 using ODataTools.Infrastructure.ExtensionMethods;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ODataTools.Reader.Common
 {

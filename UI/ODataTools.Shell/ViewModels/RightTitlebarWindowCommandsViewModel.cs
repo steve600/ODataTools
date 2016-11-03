@@ -1,5 +1,5 @@
-﻿using ODataTools.Core.Base;
-using Microsoft.Practices.Unity;
+﻿using Microsoft.Practices.Unity;
+using ODataTools.Core.Base;
 using Prism.Events;
 using Prism.Regions;
 

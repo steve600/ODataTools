@@ -1,11 +1,9 @@
-﻿using ODataTools.Reader.Common.Common;
+﻿using ODataTools.DtoGenerator.Contracts;
+using ODataTools.DtoGenerator.Contracts.Enums;
+using ODataTools.DtoGenerator.Contracts.Interfaces;
 using System;
 using System.Collections.Generic;
-using ODataTools.Reader.Common;
 using System.IO;
-using ODataTools.DtoGenerator.Contracts;
-using ODataTools.DtoGenerator.Contracts.Interfaces;
-using ODataTools.DtoGenerator.Contracts.Enums;
 
 namespace ODataTools.Reader.Services
 {

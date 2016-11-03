@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ODataTools.ModelVisualizer.Contracts.Model
+﻿namespace ODataTools.ModelVisualizer.Contracts.Model
 {
     public class EntityField
     {

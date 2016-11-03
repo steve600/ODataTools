@@ -1,19 +1,19 @@
-﻿using Microsoft.Practices.Unity;
+﻿using GraphX.Controls;
+using GraphX.PCL.Common.Enums;
+using Microsoft.Practices.Unity;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using ODataTools.Core.Base;
 using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
 using ODataTools.ModelVisualizer.Contracts.Model;
+using ODataTools.ModelVisualizer.Graphs;
 using ODataTools.Reader.Common.Common;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using System.Collections.ObjectModel;
-using ODataTools.ModelVisualizer.Graphs;
-using GraphX.Controls;
 using System.Linq;
-using GraphX.PCL.Common.Enums;
 using System.Windows.Input;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Prism.Commands;
 
 namespace ODataTools.ModelVisualizer.ViewModels
 {

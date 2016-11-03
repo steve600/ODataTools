@@ -1,21 +1,10 @@
 ﻿using Microsoft.Practices.Unity;
 using ODataTools.Core.Base;
+using ODataTools.DtoGenerator.Contracts.Enums;
 using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
 using Prism.Events;
 using Prism.Regions;
-using ODataTools.DtoGenerator.Generator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Windows.Input;
-using Prism.Commands;
-using System.Xml.Linq;
-using System.IO;
-using ODataTools.DtoGenerator.Contracts.Enums;
 
 namespace ODataTools.DtoGenerator.ViewModels
 {

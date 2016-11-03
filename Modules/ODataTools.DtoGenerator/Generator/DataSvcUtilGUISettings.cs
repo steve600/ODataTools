@@ -1,11 +1,7 @@
 ﻿using ODataTools.DtoGenerator.Contracts.Enums;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ODataTools.DtoGenerator.Generator
 {

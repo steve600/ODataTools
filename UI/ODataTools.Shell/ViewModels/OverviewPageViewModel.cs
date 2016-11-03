@@ -4,11 +4,6 @@ using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
 using Prism.Events;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ODataTools.Shell.ViewModels
 {

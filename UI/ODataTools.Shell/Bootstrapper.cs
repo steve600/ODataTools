@@ -1,24 +1,19 @@
-﻿using Prism.Regions;
-using Prism.Unity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Dragablz;
 using Microsoft.Practices.Unity;
-using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure;
+using ODataTools.Infrastructure.Constants;
+using ODataTools.Infrastructure.Events;
 using ODataTools.Infrastructure.Interfaces;
 using ODataTools.Infrastructure.Services;
-using Prism.Modularity;
-using Prism.Events;
-using ODataTools.Shell.Services;
-using ODataTools.Infrastructure.Events;
-using ODataTools.Shell.Views;
-using Dragablz;
 using ODataTools.Shell.RegionAdapter;
+using ODataTools.Shell.Services;
+using ODataTools.Shell.Views;
+using Prism.Events;
+using Prism.Modularity;
+using Prism.Regions;
+using Prism.Unity;
+using System.Threading;
+using System.Windows;
 
 namespace ODataTools.Shell
 {
