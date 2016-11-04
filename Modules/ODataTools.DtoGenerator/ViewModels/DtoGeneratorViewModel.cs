@@ -19,7 +19,7 @@ namespace ODataTools.DtoGenerator.ViewModels
         public DtoGeneratorViewModel(IUnityContainer unityContainer, IRegionManager regionManager, IEventAggregator eventAggregator) :
             base(unityContainer, regionManager, eventAggregator)
         {
-            this.Title = this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("DtoGeneratorViewTitle");
+            this.Title = this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorViewTitle");
 
             this.RegionManager.RegisterViewWithRegion(RegionNames.DtoGeneratorSettingsRegion, typeof(Views.DtoGeneratorSettingsEdit));
 

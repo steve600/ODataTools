@@ -50,14 +50,14 @@ namespace ODataTools.DtoGenerator.ViewModels
                 {
                     this.EdmxFileContent = XDocument.Load(edmxFile).ToString();
 
-                    var logMessage = String.Format(localizerService.GetLocalizedString("DtoGeneratorEdmxSuccessfullyLoaded"), edmxFile);
+                    var logMessage = String.Format(localizerService.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorEdmxSuccessfullyLoaded"), edmxFile);
                     EventAggregator.GetEvent<DtoGeneratorLogEntryAdded>().Publish(new DtoGeneratorLogEntryAddedEventArgs(DtoGeneratorMode.DtoGenerator, logMessage));
 
                     this.GeneratedSourceFiles = null;
                 }
                 catch (Exception ex)
                 {
-                    var logMessage = String.Format(localizerService.GetLocalizedString("DtoGeneratorFailedToLoadEdmxFile"), edmxFile, ex.ToString());
+                    var logMessage = String.Format(localizerService.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorFailedToLoadEdmxFile"), edmxFile, ex.ToString());
                     EventAggregator.GetEvent<DtoGeneratorLogEntryAdded>().Publish(new DtoGeneratorLogEntryAddedEventArgs(DtoGeneratorMode.DtoGenerator, logMessage));
                 }
             }
@@ -93,7 +93,7 @@ namespace ODataTools.DtoGenerator.ViewModels
             if (this.GeneratorMode == args.GeneratorMode)
             {
                 this.GeneratedSourceFiles = args.GeneratedFiles;
-                var logMessage = String.Format(localizerService.GetLocalizedString("DtoGeneratorGeneratorFinished"), args.GeneratedFiles.Count);
+                var logMessage = String.Format(localizerService.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorGeneratorFinished"), args.GeneratedFiles.Count);
                 EventAggregator.GetEvent<DtoGeneratorLogEntryAdded>().Publish(new DtoGeneratorLogEntryAddedEventArgs(DtoGeneratorMode.DtoGenerator, logMessage));
             }
         }

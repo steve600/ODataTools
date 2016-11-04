@@ -1,5 +1,6 @@
 ﻿using ODataTools.DtoGenerator.Contracts.Enums;
 using Prism.Mvvm;
+using System.Net;
 
 namespace ODataTools.DtoGenerator.Contracts
 {
@@ -69,6 +70,17 @@ namespace ODataTools.DtoGenerator.Contracts
         {
             get { return dataClassOptions; }
             set { this.SetProperty<DataClassOptions>(ref this.dataClassOptions, value); }
-        }        
+        }
+
+        private ICredentials userCredentials = null;
+
+        /// <summary>
+        /// User credentials
+        /// </summary>
+        public ICredentials UserCredentials
+        {
+            get { return userCredentials; }
+            set { this.SetProperty<ICredentials>(ref this.userCredentials, value); }
+        }
     }
 }

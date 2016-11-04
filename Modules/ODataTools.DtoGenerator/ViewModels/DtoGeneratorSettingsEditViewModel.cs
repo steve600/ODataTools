@@ -7,8 +7,10 @@ using ODataTools.DtoGenerator.Contracts.Interfaces;
 using ODataTools.DtoGenerator.Events;
 using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
+using ODataTools.Reader.Common.Model;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
 using System;
 using System.IO;
@@ -28,11 +30,12 @@ namespace ODataTools.DtoGenerator.ViewModels
         public DtoGeneratorSettingsEditViewModel(IUnityContainer unityContainer, IRegionManager regionManager, IEventAggregator eventAggregator) :
             base(unityContainer, regionManager, eventAggregator)
         {
-            this.Title = this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("DtoGeneratorViewTitle");
+            this.Title = this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorViewTitle");
 
+            this.UserCredentialsConfirmationRequest = new InteractionRequest<UserCredentialsConfirmation>();
+            
             this.GeneratorSettings = new DtoGeneratorSettings()
             {
-                OutputPath = @"C:\Temp\OData\Generated",
                 GenerateAttributes = true,
                 GenerateSingleFilePerDto = false,
                 TargetNamespace = "MyNamespace"
@@ -40,6 +43,12 @@ namespace ODataTools.DtoGenerator.ViewModels
 
             this.InitializeCommands();
         }
+
+        #region Interaction Requests
+
+        public InteractionRequest<UserCredentialsConfirmation> UserCredentialsConfirmationRequest { get; private set; }
+
+        #endregion Interaction Requests
 
         #region Commands
 
@@ -52,6 +61,7 @@ namespace ODataTools.DtoGenerator.ViewModels
             this.SelectOutputDirectoryCommand = new DelegateCommand(this.SelectOutputDirectory);
             this.OpenOutputDirectoryCommand = new DelegateCommand(this.OpenOutputDirectory);
             this.GenerateDataClassesCommand = DelegateCommand.FromAsyncHandler(this.GenerateDataClasses);
+            this.GetUserCredentialsCommand = new DelegateCommand(this.GetUserCredentials);
         }
 
         /// <summary>
@@ -64,10 +74,10 @@ namespace ODataTools.DtoGenerator.ViewModels
         /// </summary>
         private void OpenEdmxFile()
         {
-            CommonOpenFileDialog fileDialog = new CommonOpenFileDialog(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("DtoGeneratorSelectModelFile"));
+            CommonOpenFileDialog fileDialog = new CommonOpenFileDialog(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorSelectModelFile"));
             fileDialog.IsFolderPicker = false;
             fileDialog.Multiselect = false;
-            fileDialog.Filters.Add(new CommonFileDialogFilter(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("DtoGeneratorModelFiles"), "*.edmx"));
+            fileDialog.Filters.Add(new CommonFileDialogFilter(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorModelFiles"), "*.edmx"));
 
             if (fileDialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
@@ -91,7 +101,7 @@ namespace ODataTools.DtoGenerator.ViewModels
         /// </summary>
         private void SelectOutputDirectory()
         {
-            CommonOpenFileDialog fileDialog = new CommonOpenFileDialog("Select otuput directory");
+            CommonOpenFileDialog fileDialog = new CommonOpenFileDialog("Select output directory");
             fileDialog.IsFolderPicker = true;
             fileDialog.Multiselect = false;
 
@@ -109,7 +119,16 @@ namespace ODataTools.DtoGenerator.ViewModels
         private void OpenOutputDirectory()
         {
             if (!String.IsNullOrEmpty(this.GeneratorSettings.OutputPath))
-                System.Diagnostics.Process.Start(this.GeneratorSettings.OutputPath);
+            {
+                if (System.IO.Directory.Exists(this.GeneratorSettings.OutputPath))
+                {
+                    System.Diagnostics.Process.Start(this.GeneratorSettings.OutputPath);
+                }
+                else
+                {
+                    // TODO: Message directory not exists
+                }
+            }
         }
 
         public ICommand GenerateDataClassesCommand { get; private set; }
@@ -132,6 +151,18 @@ namespace ODataTools.DtoGenerator.ViewModels
 
                 EventAggregator.GetEvent<DtoGeneratorFinished>().Publish(new DtoGeneratorFinishedEventArgs(DtoGeneratorMode.DtoGenerator, result));
             });
+        }
+
+        public ICommand GetUserCredentialsCommand { get; private set; }
+
+        /// <summary>
+        /// Get user credentials
+        /// </summary>
+        private void GetUserCredentials()
+        {
+            this.UserCredentialsConfirmationRequest.Raise(
+                new UserCredentialsConfirmation { Title = "User-Credentials" },
+                c => { this.GeneratorSettings.UserCredentials = c.Confirmed ? c.UserCredentials : null; });
         }
 
         #endregion Commands

@@ -49,6 +49,7 @@ namespace ODataTools.Infrastructure.Services
             string uiString;
             LocExtension locExtension = new LocExtension(key);
             locExtension.ResolveLocalizedValue(out uiString);
+            uiString = uiString ?? string.Empty;
             return uiString;
         }
 

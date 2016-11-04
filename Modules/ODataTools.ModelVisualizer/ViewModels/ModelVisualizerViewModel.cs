@@ -30,7 +30,7 @@ namespace ODataTools.ModelVisualizer.ViewModels
         public ModelVisualizerViewModel(IUnityContainer unityContainer, IRegionManager regionManager, IEventAggregator eventAggregator) :
             base(unityContainer, regionManager, eventAggregator)
         {
-            this.Title = this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ModelVisualizerTitle");
+            this.Title = this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.ModelVisualizer:Resources:ModelVisualizerTitle");
 
             this.InitializeCommands();
 
@@ -59,12 +59,12 @@ namespace ODataTools.ModelVisualizer.ViewModels
         /// </summary>
         private void OpenEdmxFile()
         {
-            CommonOpenFileDialog fileDialog = new CommonOpenFileDialog(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ModelVisualizerSelectModelFile"));
-            fileDialog.Filters.Add(new CommonFileDialogFilter(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ModelVisualizerModelFiles"), "*.edmx"));
+            CommonOpenFileDialog fileDialog = new CommonOpenFileDialog(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.ModelVisualizer:Resources:ModelVisualizerSelectModelFile"));
+            fileDialog.Filters.Add(new CommonFileDialogFilter(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.ModelVisualizer:Resources:ModelVisualizerModelFiles"), "*.edmx"));
 
             fileDialog.IsFolderPicker = false;
             fileDialog.Multiselect = false;
-            fileDialog.Filters.Add(new CommonFileDialogFilter(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ModelVisualizerModelFiles"), "*.edmx"));
+            fileDialog.Filters.Add(new CommonFileDialogFilter(this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.ModelVisualizer:Resources:ModelVisualizerModelFiles"), "*.edmx"));
 
             if (fileDialog.ShowDialog() == CommonFileDialogResult.Ok)
             {

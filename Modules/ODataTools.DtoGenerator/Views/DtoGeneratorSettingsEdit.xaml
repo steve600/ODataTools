@@ -3,19 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:ODataTools.DtoGenerator.Views"
              xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:lex="http://wpflocalizeextension.codeplex.com"
              xmlns:markupExtensions="clr-namespace:ODataTools.Core.MarkupExtensions;assembly=ODataTools.Core"
              xmlns:readerEnums="clr-namespace:ODataTools.DtoGenerator.Contracts.Enums;assembly=ODataTools.DtoGenerator.Contracts"
+             xmlns:views="clr-namespace:ODataTools.Reader.Common.Views;assembly=ODataTools.Reader.Common"
+             xmlns:triggerActions="clr-namespace:ODataTools.Core.TriggerActions;assembly=ODataTools.Core"
              lex:LocalizeDictionary.DesignCulture="de"
              lex:ResxLocalizationProvider.DefaultAssembly="ODataTools.DtoGenerator"
              lex:ResxLocalizationProvider.DefaultDictionary="Resources"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="450">
-    
+
+    <i:Interaction.Triggers>
+
+        <prism:InteractionRequestTrigger SourceObject="{Binding UserCredentialsConfirmationRequest, Mode=OneWay}">
+            <!-- This PopupWindowAction has a custom view defined. When this action is executed the view will be shown inside a new window -->
+            <!-- Take into account that the view is created only once and will be reused each time the action is executed -->
+            <triggerActions:PopupMetroWindowAction IsModal="True"
+                                                   WindowStartupLocation="CenterOwner"
+                                                   WindowStyle="{StaticResource MetroWindowPopupStyle}">
+                <prism:PopupWindowAction.WindowContent>
+                    <views:UserCredentialsInput />
+                </prism:PopupWindowAction.WindowContent>
+            </triggerActions:PopupMetroWindowAction>
+        </prism:InteractionRequestTrigger>
+
+    </i:Interaction.Triggers>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -81,12 +100,13 @@
                         IsEnabled="{Binding ElementName=rdbEdmxUrl, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}">
             <TextBox Width="250" />
             <Button Margin="5,0,0,0"
-                        Style="{StaticResource AccentedSquareButtonStyle}">
+                    Command="{Binding GetUserCredentialsCommand}"
+                    Style="{StaticResource AccentedSquareButtonStyle}">
                 <Rectangle Width="20" Height="16"
                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                         Visual="{StaticResource appbar_folder_open}" />
+                                         Visual="{StaticResource appbar_user}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>

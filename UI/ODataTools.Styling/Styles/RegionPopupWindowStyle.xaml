@@ -12,4 +12,14 @@
         <Setter Property="Icon" Value="{Binding Path=Content.DataContext.ViewIcon, RelativeSource={RelativeSource Self}}" />
         <Setter Property="Title" Value="{Binding Path=Content.DataContext.Title, RelativeSource={RelativeSource Self}}" />
     </Style>
+
+    <Style x:Key="MetroWindowPopupStyle" TargetType="metro:MetroWindow">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="GlowBrush" Value="{DynamicResource AccentColorBrush}" />
+        <Setter Property="ShowInTaskbar" Value="False" />
+        <Setter Property="SizeToContent" Value="WidthAndHeight" />
+        <Setter Property="ResizeMode" Value="NoResize" />
+    </Style>
 </ResourceDictionary>
