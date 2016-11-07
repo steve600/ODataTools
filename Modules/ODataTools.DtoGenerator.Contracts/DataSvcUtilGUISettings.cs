@@ -1,9 +1,13 @@
 ﻿using ODataTools.DtoGenerator.Contracts.Enums;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ODataTools.DtoGenerator.Generator
+namespace ODataTools.DtoGenerator.Contracts
 {
     public class DataSvcUtilGUISettings : BindableBase
     {
@@ -39,7 +43,7 @@ namespace ODataTools.DtoGenerator.Generator
             get { return isInFileMode; }
             set { this.SetProperty<bool>(ref this.isInFileMode, value); }
         }
-        
+
         private string inputFile;
 
         /// <summary>

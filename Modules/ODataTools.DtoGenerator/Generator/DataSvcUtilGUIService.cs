@@ -1,4 +1,5 @@
 ﻿using ODataTools.Core.Base;
+using ODataTools.DtoGenerator.Contracts;
 using ODataTools.DtoGenerator.Contracts.Enums;
 using ODataTools.DtoGenerator.Events;
 using ODataTools.DtoGenerator.Interfaces;

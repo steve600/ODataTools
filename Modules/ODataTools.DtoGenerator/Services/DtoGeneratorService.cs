@@ -1,11 +1,12 @@
 ﻿using ODataTools.DtoGenerator.Contracts;
 using ODataTools.DtoGenerator.Contracts.Enums;
 using ODataTools.DtoGenerator.Contracts.Interfaces;
+using ODataTools.Reader.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ODataTools.Reader.Services
+namespace ODataTools.DtoGenerator.Services
 {
     public class DtoGeneratorService : IDtoGenerator
     {

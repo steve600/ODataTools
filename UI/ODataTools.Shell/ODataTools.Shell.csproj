@@ -231,10 +231,6 @@
       <Project>{a2b92157-74e8-403b-a8fc-0c90d685446e}</Project>
       <Name>ODataTools.ModelVisualizer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Reader\ODataTools.Reader\ODataTools.Reader.csproj">
-      <Project>{14ec2f33-cdd1-4139-905c-e4fa2c6c6b5b}</Project>
-      <Name>ODataTools.Reader</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ODataTools.Styling\ODataTools.Styling.csproj">
       <Project>{c7f3677c-8139-429a-b694-580777e5f61b}</Project>
       <Name>ODataTools.Styling</Name>

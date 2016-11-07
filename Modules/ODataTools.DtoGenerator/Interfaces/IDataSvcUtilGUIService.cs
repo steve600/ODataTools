@@ -1,4 +1,5 @@
-﻿using ODataTools.DtoGenerator.Generator;
+﻿using ODataTools.DtoGenerator.Contracts;
+using ODataTools.DtoGenerator.Generator;
 
 namespace ODataTools.DtoGenerator.Interfaces
 {

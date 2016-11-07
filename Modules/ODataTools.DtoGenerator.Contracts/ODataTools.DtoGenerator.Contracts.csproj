@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSvcUtilGUISettings.cs" />
     <Compile Include="DtoGeneratorSettings.cs" />
     <Compile Include="Enums\DtoGeneratorEnums.cs" />
     <Compile Include="Interfaces\IDtoGenerator.cs" />

@@ -103,10 +103,6 @@ namespace ODataTools.Shell
             prismModule = Container.Resolve<ODataTools.DtoGenerator.DtoGeneratorModule>();
             prismModule.Initialize();
 
-            // OData-Reader
-            prismModule = Container.Resolve<ODataTools.Reader.ReaderModule>();
-            prismModule.Initialize();
-
             // Model-Visualizer
             prismModule = Container.Resolve<ODataTools.ModelVisualizer.ModelVisualizerModule>();
             prismModule.Initialize();

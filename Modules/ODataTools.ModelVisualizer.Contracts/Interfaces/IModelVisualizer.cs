@@ -1,7 +1,7 @@
 ﻿using ODataTools.ModelVisualizer.Contracts.Model;
 using System.Collections.ObjectModel;
 
-namespace ODataTools.Reader.Common.Common
+namespace ODataTools.ModelVisualizer.Contracts.Interfaces
 {
     public interface IModelVisualizer
     {
