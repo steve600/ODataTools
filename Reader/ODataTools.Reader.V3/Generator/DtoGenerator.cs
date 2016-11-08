@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Data.Edm.Csdl;
 
 namespace ODataTools.Reader.V3.Generator
 {
@@ -67,11 +68,11 @@ namespace ODataTools.Reader.V3.Generator
         /// <param name="model">The model.</param>
         /// <param name="dtoGeneratorSettings">The DTO generator settings.</param>
         /// <returns></returns>
-        public Dictionary<FileInfo, string> GenerateDtoClassesForModel(DtoGeneratorSettings dtoGeneratorSettings, string outputFileName = "Generated.cs")
+        public Dictionary<FileInfo, string> GenerateDtoClassesForModel(string metaDataDocument, DtoGeneratorSettings dtoGeneratorSettings, string outputFileName = "Generated.cs")
         {
             Dictionary<FileInfo, string> result = new Dictionary<FileInfo, string>();
 
-            IEdmModel model = ModelReader.Parse(dtoGeneratorSettings.SourceEdmxFile);                       
+            IEdmModel model = ModelReader.Parse(metaDataDocument);                       
 
             if (model != null)
             {
@@ -247,20 +248,20 @@ namespace ODataTools.Reader.V3.Generator
             switch (dataClassOptions)
             {
                 case DataClassOptions.DTO:
-                    result.Add(RoslynHelper.CreateProperty(property.Name, GetClrDataType(property.Type.PrimitiveKind())));
+                    result.Add(RoslynHelper.CreateProperty(property.Name, GetDataType(property.Type)));
                     break;
                 case DataClassOptions.INotifyPropertyChanged:
-                    var props = RoslynHelper.CreateBindableProperty(property.Name, GetClrDataType(property.Type.PrimitiveKind()));
+                    var props = RoslynHelper.CreateBindableProperty(property.Name, GetDataType(property.Type));
                     foreach (var p in props)
                         result.Add(p);                    
                     break;
                 case DataClassOptions.Proxy:
-                    var proxyProps = RoslynHelper.CreateDtoProxyProperty(property.Name, GetClrDataType(property.Type.PrimitiveKind()));
+                    var proxyProps = RoslynHelper.CreateDtoProxyProperty(property.Name, GetDataType(property.Type));
                     foreach (var p in proxyProps)
                         result.Add(p);
                     break;
                 default:
-                    result.Add(RoslynHelper.CreateProperty(property.Name, GetClrDataType(property.Type.PrimitiveKind())));
+                    result.Add(RoslynHelper.CreateProperty(property.Name, GetDataType(property.Type)));
                     break;
             }
 
@@ -298,7 +299,7 @@ namespace ODataTools.Reader.V3.Generator
         {
             string keyList = string.Empty;
 
-            if (entity.DeclaredKey.Count() > 0)
+            if (entity.DeclaredKey?.Count() > 0)
             {
                 keyList = string.Join(",", entity.DeclaredKey.Select(k => $"\"{k.Name}\""));
 
@@ -307,6 +308,37 @@ namespace ODataTools.Reader.V3.Generator
             }
 
             return keyList;
+        }
+
+        /// <summary>
+        /// Get data type
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <returns></returns>
+        private string GetDataType(IEdmTypeReference type)
+        {
+            string result = string.Empty;
+
+            var propertyType = type.PrimitiveKind();
+
+            if (propertyType != EdmPrimitiveTypeKind.None)
+            {
+                result = GetClrDataType(propertyType);
+            }
+            else
+            {
+                if (type.IsComplex())
+                {                    
+                    var ct = type.Definition as IEdmComplexType;
+                    
+                    // TODO Create type!
+
+                    result = ct.Name;
+
+                }                
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -321,6 +353,6 @@ namespace ODataTools.Reader.V3.Generator
             ClrDictionary.TryGetValue(type, out value);
 
             return value;
-        }
+        }        
     }
 }

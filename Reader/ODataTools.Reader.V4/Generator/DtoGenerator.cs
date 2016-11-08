@@ -66,11 +66,11 @@ namespace ODataTools.Reader.V4.Generator
         /// <param name="model">The model.</param>
         /// <param name="dtoGeneratorSettings">The DTO generator settings.</param>
         /// <returns></returns>
-        public Dictionary<FileInfo, string> GenerateDtoClassesForModel(DtoGeneratorSettings dtoGeneratorSettings, string outputFileName = "Generated.cs")
+        public Dictionary<FileInfo, string> GenerateDtoClassesForModel(string metaDataDocument, DtoGeneratorSettings dtoGeneratorSettings, string outputFileName = "Generated.cs")
         {
             Dictionary<FileInfo, string> result = new Dictionary<FileInfo, string>();
 
-            IEdmModel model = ModelReader.Parse(dtoGeneratorSettings.SourceEdmxFile);
+            IEdmModel model = ModelReader.Parse(metaDataDocument);
 
             if (model != null)
             {

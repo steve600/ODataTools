@@ -6,6 +6,17 @@ namespace ODataTools.DtoGenerator.Contracts
 {
     public class DtoGeneratorSettings : BindableBase
     {
+        private bool isFileModeEnabled = true;
+
+        /// <summary>
+        /// Is file mode enabled
+        /// </summary>
+        public bool IsFileModeEnabled
+        {
+            get { return isFileModeEnabled; }
+            set { this.SetProperty<bool>(ref this.isFileModeEnabled, value); }
+        }
+
         private string targetNamespace = "MyNamespace";
 
         /// <summary>
@@ -59,6 +70,17 @@ namespace ODataTools.DtoGenerator.Contracts
         {
             get { return sourceEdmxFile; }
             set { this.SetProperty<string>(ref this.sourceEdmxFile, value); }
+        }
+
+        private string serviceBaseUrl;
+
+        /// <summary>
+        /// Base url of the service
+        /// </summary>
+        public string ServiceBaseUrl
+        {
+            get { return serviceBaseUrl; }
+            set { this.SetProperty<string>(ref this.serviceBaseUrl, value); }
         }
 
         private DataClassOptions dataClassOptions = DataClassOptions.DTO;

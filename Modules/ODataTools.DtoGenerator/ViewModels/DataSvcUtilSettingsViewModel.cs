@@ -66,7 +66,7 @@ namespace ODataTools.DtoGenerator.ViewModels
             {
                 this.dataSvcUtilGUIService.Settings.InputFile = fileDialog.FileName;
 
-                EventAggregator.GetEvent<EdmxFileChanged>().Publish(fileDialog.FileName);
+                EventAggregator.GetEvent<EdmxFileChanged>().Publish(File.ReadAllText(fileDialog.FileName));
 
                 this.dataSvcUtilGUIService.Settings.OutputFile = Path.ChangeExtension(this.dataSvcUtilGUIService.Settings.InputFile, "cs");
             }

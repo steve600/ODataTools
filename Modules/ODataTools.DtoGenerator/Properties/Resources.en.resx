@@ -159,14 +159,14 @@ DataSvcUtil</value>
     <value>Generated file</value>
   </data>
   <data name="DtoGeneratorEdmxSuccessfullyLoaded" xml:space="preserve">
-    <value>EDMX-File {0} successfully loaded</value>
+    <value>EDMX-File successfully loaded</value>
   </data>
   <data name="DtoGeneratorFailedToLoadEdmxFile" xml:space="preserve">
-    <value>EDXM-File {0} cannot be loaded.
+    <value>EDXM-File cannot be loaded.
 
 Error:
 
-{1}</value>
+{0}</value>
   </data>
   <data name="DtoGeneratorGeneratorFinished" xml:space="preserve">
     <value>Generation successful ({0} file(s) generated)</value>

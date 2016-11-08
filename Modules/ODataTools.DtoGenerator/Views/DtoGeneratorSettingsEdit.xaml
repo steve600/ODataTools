@@ -64,7 +64,7 @@
                          Grid.Column="0"
                          Grid.Row="0"
                          Content="{lex:Loc Key=DtoGeneratorModelSourceFile}" 
-                         IsChecked="True" />
+                         IsChecked="{Binding Path=GeneratorSettings.IsFileModeEnabled, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
         <StackPanel Grid.Column="2" 
                         Grid.Row="0"
                         Orientation="Horizontal"
@@ -98,7 +98,8 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         IsEnabled="{Binding ElementName=rdbEdmxUrl, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}">
-            <TextBox Width="250" />
+            <TextBox Width="250" 
+                     Text="{Binding Path=GeneratorSettings.ServiceBaseUrl, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
             <Button Margin="5,0,0,0"
                     Command="{Binding GetUserCredentialsCommand}"
                     Style="{StaticResource AccentedSquareButtonStyle}">

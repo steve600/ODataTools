@@ -2,6 +2,7 @@
 using Microsoft.Data.Edm.Csdl;
 using Microsoft.Data.Edm.Validation;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 
@@ -9,11 +10,11 @@ namespace ODataTools.Reader.V3
 {
     public static class ModelReader
     {
-        public static IEdmModel Parse(string modelFile)
+        public static IEdmModel Parse(string fileContent)
         {
             IEdmModel model = null;
 
-            using (XmlReader reader = XmlReader.Create(modelFile))
+            using (XmlReader reader = XmlReader.Create(new StringReader(fileContent)))
             {
                 IEnumerable<EdmError> errors = null;
 

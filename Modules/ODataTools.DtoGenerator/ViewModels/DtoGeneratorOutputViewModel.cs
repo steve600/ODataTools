@@ -42,22 +42,22 @@ namespace ODataTools.DtoGenerator.ViewModels
         /// Event-Handler for EDMX-File changed
         /// </summary>
         /// <param name="edmxFile">The new filepath.</param>
-        private void EdmxFileChangedEventHandler(string edmxFile)
+        private void EdmxFileChangedEventHandler(string edmxFileContent)
         {
-            if (System.IO.File.Exists(edmxFile))
+            if (!String.IsNullOrEmpty(edmxFileContent))
             {
                 try
                 {
-                    this.EdmxFileContent = XDocument.Load(edmxFile).ToString();
+                    this.EdmxFileContent = XDocument.Parse(edmxFileContent).ToString();
 
-                    var logMessage = String.Format(localizerService.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorEdmxSuccessfullyLoaded"), edmxFile);
+                    var logMessage = String.Format(localizerService.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorEdmxSuccessfullyLoaded"));
                     EventAggregator.GetEvent<DtoGeneratorLogEntryAdded>().Publish(new DtoGeneratorLogEntryAddedEventArgs(DtoGeneratorMode.DtoGenerator, logMessage));
 
                     this.GeneratedSourceFiles = null;
                 }
                 catch (Exception ex)
                 {
-                    var logMessage = String.Format(localizerService.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorFailedToLoadEdmxFile"), edmxFile, ex.ToString());
+                    var logMessage = String.Format(localizerService.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorFailedToLoadEdmxFile"), ex.ToString());
                     EventAggregator.GetEvent<DtoGeneratorLogEntryAdded>().Publish(new DtoGeneratorLogEntryAddedEventArgs(DtoGeneratorMode.DtoGenerator, logMessage));
                 }
             }

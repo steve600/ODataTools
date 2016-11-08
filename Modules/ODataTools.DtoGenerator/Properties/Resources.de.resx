@@ -159,14 +159,14 @@ DataSvcUtil</value>
     <value>GenerierteDatei</value>
   </data>
   <data name="DtoGeneratorEdmxSuccessfullyLoaded" xml:space="preserve">
-    <value>EDMX-Datei {0} erfolgreich geladen</value>
+    <value>EDMX-Datei erfolgreich geladen</value>
   </data>
   <data name="DtoGeneratorFailedToLoadEdmxFile" xml:space="preserve">
-    <value>EDXM-Datei {0} kann nicht geladen werden.
+    <value>EDXM-Datei kann nicht geladen werden.
 
 Fehler:
 
-{1}</value>
+{0}</value>
   </data>
   <data name="DtoGeneratorGeneratorFinished" xml:space="preserve">
     <value>Generierung erfolgreich ({0} Datei(en) generiert)</value>

@@ -7,6 +7,7 @@ using ODataTools.DtoGenerator.Contracts.Interfaces;
 using ODataTools.DtoGenerator.Events;
 using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
+using ODataTools.Reader.Common;
 using ODataTools.Reader.Common.Model;
 using Prism.Commands;
 using Prism.Events;
@@ -86,7 +87,7 @@ namespace ODataTools.DtoGenerator.ViewModels
                 if (System.IO.File.Exists(this.GeneratorSettings.SourceEdmxFile))
                 {
                     // Fire-Event
-                    EventAggregator.GetEvent<EdmxFileChanged>().Publish(this.GeneratorSettings.SourceEdmxFile);
+                    EventAggregator.GetEvent<EdmxFileChanged>().Publish(File.ReadAllText(this.GeneratorSettings.SourceEdmxFile));
                 }
             }
         }
@@ -145,9 +146,36 @@ namespace ODataTools.DtoGenerator.ViewModels
             {
                 var dtoGeneratorService = Container.Resolve<IDtoGenerator>(ServiceNames.DtoGeneratorService);
 
-                string outputFile = Path.GetFileName(Path.ChangeExtension(generatorSettings.SourceEdmxFile, ".cs"));            
+                string outputFile = Path.GetFileName(Path.ChangeExtension(generatorSettings.SourceEdmxFile, ".cs"));
 
-                var result = dtoGeneratorService.GenerateDtoClassesForModel(generatorSettings, outputFile);
+                string fileContent = string.Empty;
+
+                if (generatorSettings.IsFileModeEnabled)
+                {
+                    if (System.IO.File.Exists(generatorSettings.SourceEdmxFile))
+                    {
+                        fileContent = File.ReadAllText(generatorSettings.SourceEdmxFile);
+                    }
+                    else
+                    {
+                        // TODO: Message file not exists
+                    }
+                }
+                else
+                {
+                    if (!String.IsNullOrEmpty(generatorSettings.ServiceBaseUrl))
+                    {
+                        Uri baseUrl = new Uri(generatorSettings.ServiceBaseUrl);
+
+                        if (generatorSettings.UserCredentials == null)
+                        {
+                            fileContent = MetadataHelper.GetMetadata(baseUrl);
+                            EventAggregator.GetEvent<EdmxFileChanged>().Publish(fileContent);
+                        }
+                    }
+                }
+
+                var result = dtoGeneratorService.GenerateDtoClassesForModel(fileContent, generatorSettings, outputFile);
 
                 EventAggregator.GetEvent<DtoGeneratorFinished>().Publish(new DtoGeneratorFinishedEventArgs(DtoGeneratorMode.DtoGenerator, result));
             });
