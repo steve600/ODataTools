@@ -22,6 +22,8 @@ namespace ODataTools.DtoGenerator.ViewModels
 {
     public class DtoGeneratorSettingsEditViewModel : ViewModelBase
     {
+        PropertyChangedObserver<DtoGeneratorSettings> generatorSettingsObserver = null;
+
         /// <summary>
         /// CTOR
         /// </summary>
@@ -33,6 +35,8 @@ namespace ODataTools.DtoGenerator.ViewModels
         {
             this.Title = this.Container?.Resolve<ILocalizerService>(ServiceNames.LocalizerService)?.GetLocalizedString("ODataTools.DtoGenerator:Resources:DtoGeneratorViewTitle");
 
+            this.InitializeCommands();
+
             this.UserCredentialsConfirmationRequest = new InteractionRequest<UserCredentialsConfirmation>();
             
             this.GeneratorSettings = new DtoGeneratorSettings()
@@ -42,8 +46,20 @@ namespace ODataTools.DtoGenerator.ViewModels
                 TargetNamespace = "MyNamespace"
             };
 
-            this.InitializeCommands();
+            this.generatorSettingsObserver = new PropertyChangedObserver<DtoGeneratorSettings>(this.GeneratorSettings)
+                .RegisterHandler(nameof(this.GeneratorSettings.SourceEdmxFile), this.GeneratorSettingsChanged)
+                .RegisterHandler(nameof(this.GeneratorSettings.ServiceBaseUrl), this.GeneratorSettingsChanged)
+                .RegisterHandler(nameof(this.GeneratorSettings.OutputPath), this.GeneratorSettingsChanged);            
         }
+
+        #region Event-Handler
+
+        private void GeneratorSettingsChanged(DtoGeneratorSettings settings)
+        {
+            ((DelegateCommand)this.GenerateDataClassesCommand).RaiseCanExecuteChanged();
+        }
+
+        #endregion Event-Handler
 
         #region Interaction Requests
 
@@ -61,7 +77,7 @@ namespace ODataTools.DtoGenerator.ViewModels
             this.OpenEdmxFileCommand = new DelegateCommand(this.OpenEdmxFile);
             this.SelectOutputDirectoryCommand = new DelegateCommand(this.SelectOutputDirectory);
             this.OpenOutputDirectoryCommand = new DelegateCommand(this.OpenOutputDirectory);
-            this.GenerateDataClassesCommand = DelegateCommand.FromAsyncHandler(this.GenerateDataClasses);
+            this.GenerateDataClassesCommand = DelegateCommand.FromAsyncHandler(this.GenerateDataClasses, this.GenerateDataClassesCanExecute);
             this.GetUserCredentialsCommand = new DelegateCommand(this.GetUserCredentials);
         }
 
@@ -179,6 +195,11 @@ namespace ODataTools.DtoGenerator.ViewModels
 
                 EventAggregator.GetEvent<DtoGeneratorFinished>().Publish(new DtoGeneratorFinishedEventArgs(DtoGeneratorMode.DtoGenerator, result));
             });
+        }
+
+        private bool GenerateDataClassesCanExecute()
+        {
+            return ((!String.IsNullOrEmpty(GeneratorSettings.SourceEdmxFile) || !String.IsNullOrEmpty(GeneratorSettings.ServiceBaseUrl)) && !String.IsNullOrEmpty(GeneratorSettings.OutputPath));
         }
 
         public ICommand GetUserCredentialsCommand { get; private set; }

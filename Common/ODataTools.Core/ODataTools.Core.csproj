@@ -82,7 +82,6 @@
   <ItemGroup>
     <Compile Include="Base\PrismModuleBase.cs" />
     <Compile Include="Base\PropertyChangedObserver.cs" />
-    <Compile Include="Base\PropertyObserver.cs" />
     <Compile Include="Base\ViewModelBase.cs" />
     <Compile Include="Base\ViewModelPopupBase.cs" />
     <Compile Include="MarkupExtensions\EnumBindingSourceExtension.cs" />

@@ -1,22 +1,33 @@
 ﻿using Microsoft.Practices.Unity;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using ODataTools.Core.Base;
+using ODataTools.DtoGenerator.Contracts;
+using ODataTools.DtoGenerator.Contracts.Enums;
 using ODataTools.DtoGenerator.Events;
 using ODataTools.DtoGenerator.Interfaces;
 using ODataTools.Infrastructure.Constants;
 using ODataTools.Infrastructure.Interfaces;
+using ODataTools.Infrastructure.SystemInformation;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Linq;
 
 namespace ODataTools.DtoGenerator.ViewModels
 {
     public class DataSvcUtilSettingsViewModel : ViewModelBase
     {
+        #region Members and Constants
+
+        private string DataSvcUtilExe = "DataSvcUtil.exe";
+        private PropertyChangedObserver<DataSvcUtilGUISettings> settingsObserver = null;
+
+        #endregion Members and Constants
 
         /// <summary>
         /// CTOR
@@ -29,7 +40,57 @@ namespace ODataTools.DtoGenerator.ViewModels
         {
             this.InitializeCommands();
 
+            this.Settings.DetectedDataSvcUtils = CheckDataSvcUtil();
+
+            if (this.Settings.DetectedDataSvcUtils != null && this.Settings.DetectedDataSvcUtils.Any())
+            {
+                this.Settings.SelectedDataSvcUtil = this.Settings.DetectedDataSvcUtils.First();
+            }
+
+            this.settingsObserver = new PropertyChangedObserver<DataSvcUtilGUISettings>(this.Settings)
+                .RegisterHandler(nameof(this.Settings.Version), this.CanGenerateBindableObjects)
+                .RegisterHandler(nameof(this.Settings.GenerateBindableObjects), this.CanGenerateBindableObjects);
+
             this.DataSvcUtilGUIService = Container.Resolve<IDataSvcUtilGUIService>(ServiceNames.DataSvcUtilGUIService);        
+        }
+
+        #region Event-Handler
+
+        private void CanGenerateBindableObjects(DataSvcUtilGUISettings settings)
+        {
+            if (settings.Version == DataSvcUtilVersions.Version1)
+            {
+                settings.GenerateBindableObjects = false;
+                settings.CanGenerateBindableObjects = false;
+            }
+            else
+            {
+                settings.CanGenerateBindableObjects = true;
+            }
+        }
+
+        #endregion Event-Handler
+
+        /// <summary>
+        /// Check if DataSvcUtil is installed
+        /// </summary>
+        /// <returns></returns>
+        private IList<FileInfo> CheckDataSvcUtil()
+        {
+            IList<FileInfo> result = new List<FileInfo>();
+
+            foreach (var f in DotNetFrameworkInfo.InstalledDotNetVersions())
+            {
+                if (!String.IsNullOrEmpty(f.InstallPath))
+                {
+                    FileInfo fi = new FileInfo(Path.Combine(f.InstallPath, DataSvcUtilExe));
+
+                    if (fi.Exists && !result.Where(i => i.FullName.Equals(fi.FullName)).Any())
+                        result.Add(fi);
+                }
+            }
+
+            return result;
         }
 
         #region Commands
@@ -64,11 +125,11 @@ namespace ODataTools.DtoGenerator.ViewModels
 
             if (fileDialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                this.dataSvcUtilGUIService.Settings.InputFile = fileDialog.FileName;
+                Settings.InputFile = fileDialog.FileName;
 
                 EventAggregator.GetEvent<EdmxFileChanged>().Publish(File.ReadAllText(fileDialog.FileName));
 
-                this.dataSvcUtilGUIService.Settings.OutputFile = Path.ChangeExtension(this.dataSvcUtilGUIService.Settings.InputFile, "cs");
+                Settings.OutputFile = Path.ChangeExtension(Settings.InputFile, "cs");
             }
         }
 
@@ -91,11 +152,11 @@ namespace ODataTools.DtoGenerator.ViewModels
             {
                 if (String.IsNullOrEmpty(Path.GetExtension(fileDialog.FileName)))
                 {
-                    this.dataSvcUtilGUIService.Settings.OutputFile = Path.ChangeExtension(fileDialog.FileName, "cs");
+                    Settings.OutputFile = Path.ChangeExtension(fileDialog.FileName, "cs");
                 }
                 else
                 {
-                    this.dataSvcUtilGUIService.Settings.OutputFile = fileDialog.FileName;
+                    Settings.OutputFile = fileDialog.FileName;
                 }
             }
         }
@@ -107,9 +168,9 @@ namespace ODataTools.DtoGenerator.ViewModels
         /// </summary>
         private void OpenOutputDirectory()
         {
-            if (!String.IsNullOrEmpty(this.dataSvcUtilGUIService.Settings.OutputFile))
+            if (!String.IsNullOrEmpty(Settings.OutputFile))
             {
-                System.Diagnostics.Process.Start(Path.GetDirectoryName(this.dataSvcUtilGUIService.Settings.OutputFile));
+                System.Diagnostics.Process.Start(Path.GetDirectoryName(Settings.OutputFile));
             }
         }
 
@@ -123,22 +184,48 @@ namespace ODataTools.DtoGenerator.ViewModels
         {
             await Task.Run(() =>
             {
-                this.dataSvcUtilGUIService.Generate();
+                this.dataSvcUtilGUIService.Generate(this.Settings);
             });            
+        }
+
+        /// <summary>
+        /// Generate DTOs can execute handler
+        /// </summary>
+        /// <returns></returns>
+        private bool GenerateDataClassesCanExecute()
+        {
+            return true;
         }
 
         #endregion Commands
 
         #region Properties
 
+        #region Properties
+
+        private DataSvcUtilGUISettings settings = new DataSvcUtilGUISettings();
+
+        /// <summary>
+        /// Settings
+        /// </summary>
+        public DataSvcUtilGUISettings Settings
+        {
+            get { return settings; }
+            set { this.SetProperty<DataSvcUtilGUISettings>(ref this.settings, value); }
+        }
+
+        #endregion Properties
+
         private IDataSvcUtilGUIService dataSvcUtilGUIService;
 
+        /// <summary>
+        /// The generator service
+        /// </summary>
         public IDataSvcUtilGUIService DataSvcUtilGUIService
         {
             get { return dataSvcUtilGUIService; }
             set { this.SetProperty<IDataSvcUtilGUIService>(ref this.dataSvcUtilGUIService, value); }
         }
-
 
         #endregion Properties
     }

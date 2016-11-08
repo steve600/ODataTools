@@ -5,9 +5,6 @@ namespace ODataTools.DtoGenerator.Interfaces
 {
     public interface IDataSvcUtilGUIService
     {
-        DataSvcUtilGUISettings Settings { get; set; }
-
-        void Generate();        
-
+        void Generate(DataSvcUtilGUISettings settings);
     }
 }

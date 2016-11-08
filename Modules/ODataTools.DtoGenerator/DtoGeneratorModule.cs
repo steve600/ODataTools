@@ -6,6 +6,7 @@ using ODataTools.DtoGenerator.Interfaces;
 using ODataTools.Infrastructure.Constants;
 using Prism.Regions;
 using ODataTools.DtoGenerator.Services;
+using ODataTools.DtoGenerator.Generator.Services;
 
 namespace ODataTools.DtoGenerator
 {

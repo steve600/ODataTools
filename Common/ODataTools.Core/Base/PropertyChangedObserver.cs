@@ -31,7 +31,8 @@ namespace ODataTools.Core.Base
             if (this.propertySourceRef.TryGetTarget(out obj))
             {
                 PropertyChangedEventManager.AddHandler(obj, PropertyChangedEventHandler, propertyName);
-                this.propertyNameToHandlerMap.Add(propertyName, handler);
+                if (!this.propertyNameToHandlerMap.ContainsKey(propertyName))
+                    this.propertyNameToHandlerMap.Add(propertyName, handler);
             }
 
             return this;
