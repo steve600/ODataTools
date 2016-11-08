@@ -147,6 +147,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\ModelVisualizerService.cs" />
     <Compile Include="ViewModels\ModelVisualizerViewModel.cs" />
     <Compile Include="Views\HomeTiles.xaml.cs">
       <DependentUpon>HomeTiles.xaml</DependentUpon>
@@ -167,6 +168,18 @@
     <ProjectReference Include="..\..\Reader\ODataTools.Reader.Common\ODataTools.Reader.Common.csproj">
       <Project>{85077816-d651-4f75-8cc2-3435ae40b21d}</Project>
       <Name>ODataTools.Reader.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Reader\ODataTools.Reader.V3\ODataTools.Reader.V3.csproj">
+      <Project>{a1ed9472-0ac0-4369-99bd-f64b2f918770}</Project>
+      <Name>ODataTools.Reader.V3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Reader\ODataTools.Reader.V4\ODataTools.Reader.V4.csproj">
+      <Project>{f5830c5a-2112-49cc-84f0-70c6fc55219f}</Project>
+      <Name>ODataTools.Reader.V4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ODataTools.DtoGenerator.Contracts\ODataTools.DtoGenerator.Contracts.csproj">
+      <Project>{0B5455DC-3C71-4875-99FB-35CBEFAF4802}</Project>
+      <Name>ODataTools.DtoGenerator.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\ODataTools.ModelVisualizer.Contracts\ODataTools.ModelVisualizer.Contracts.csproj">
       <Project>{c9fb969f-042b-43db-9149-bf096ca3b480}</Project>

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Practices.Unity;
 using ODataTools.Core.Base;
 using ODataTools.Infrastructure.Constants;
+using ODataTools.ModelVisualizer.Contracts.Interfaces;
+using ODataTools.ModelVisualizer.Services;
 using Prism.Regions;
 using System;
 using System.Windows;
@@ -33,6 +35,7 @@ namespace ODataTools.ModelVisualizer
             // Register views for navigation
             Prism.Unity.UnityExtensions.RegisterTypeForNavigation<Views.ModelVisualizer>(this.UnityContainer, ViewNames.ModelVisualizer);
 
+            this.UnityContainer.RegisterInstance<IModelVisualizer>(ServiceNames.ModelVisualizerService, new ModelVisualizerService(), new ContainerControlledLifetimeManager());
 
         }
 

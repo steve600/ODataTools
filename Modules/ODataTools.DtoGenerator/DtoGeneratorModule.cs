@@ -1,9 +1,11 @@
 ﻿using Microsoft.Practices.Unity;
 using ODataTools.Core.Base;
+using ODataTools.DtoGenerator.Contracts.Interfaces;
 using ODataTools.DtoGenerator.Generator;
 using ODataTools.DtoGenerator.Interfaces;
 using ODataTools.Infrastructure.Constants;
 using Prism.Regions;
+using ODataTools.DtoGenerator.Services;
 
 namespace ODataTools.DtoGenerator
 {
@@ -36,6 +38,7 @@ namespace ODataTools.DtoGenerator
 
             // Regsiter DTO-Generator services
             //this.UnityContainer.RegisterInstance<IDtoGenerator>(ServiceNames.DtoGeneratorService_V3, new DtoGeneratorService_V3(), new ContainerControlledLifetimeManager());
+            this.UnityContainer.RegisterInstance<IDtoGenerator>(ServiceNames.DtoGeneratorService, new DtoGeneratorService(), new ContainerControlledLifetimeManager());
             this.UnityContainer.RegisterInstance<IDataSvcUtilGUIService>(ServiceNames.DataSvcUtilGUIService, UnityContainer.Resolve<DataSvcUtilGUIService>(), new ContainerControlledLifetimeManager());
         }
 

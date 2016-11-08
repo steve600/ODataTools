@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.Edm;
+using ODataTools.ModelVisualizer.Contracts.Interfaces;
 using ODataTools.ModelVisualizer.Contracts.Model;
-using ODataTools.Reader.Common.Common;
 using System.Collections.ObjectModel;
 using System.Linq;
 

@@ -1,10 +1,15 @@
 ﻿using ODataTools.DtoGenerator.Contracts.Enums;
+using ODataTools.ModelVisualizer.Contracts.Interfaces;
 using ODataTools.ModelVisualizer.Contracts.Model;
-using ODataTools.Reader.Common.Common;
+using ODataTools.Reader.Common;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-
-namespace ODataTools.Reader.Services
+namespace ODataTools.ModelVisualizer.Services
 {
     public class ModelVisualizerService : IModelVisualizer
     {

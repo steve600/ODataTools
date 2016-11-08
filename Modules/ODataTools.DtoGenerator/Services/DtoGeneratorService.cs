@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 
-namespace ODataTools.Reader.Services
+namespace ODataTools.DtoGenerator.Services
 {
     public class DtoGeneratorService : IDtoGenerator
     {

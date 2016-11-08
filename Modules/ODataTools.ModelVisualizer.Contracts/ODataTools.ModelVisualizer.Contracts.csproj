@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IModelVisualizer.cs" />
     <Compile Include="Model\EntityVertex.cs" />
     <Compile Include="Model\EntityEdge.cs" />
     <Compile Include="Model\EntityField.cs" />
