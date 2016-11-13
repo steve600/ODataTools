@@ -6,6 +6,7 @@ using ODataTools.DtoGenerator.Contracts.Enums;
 using ODataTools.DtoGenerator.Contracts.Interfaces;
 using ODataTools.DtoGenerator.Events;
 using ODataTools.Infrastructure.Constants;
+using ODataTools.Infrastructure.ExtensionMethods;
 using ODataTools.Infrastructure.Interfaces;
 using ODataTools.Reader.Common;
 using ODataTools.Reader.Common.Model;
@@ -66,6 +67,45 @@ namespace ODataTools.DtoGenerator.ViewModels
         public InteractionRequest<UserCredentialsConfirmation> UserCredentialsConfirmationRequest { get; private set; }
 
         #endregion Interaction Requests
+
+        private async Task<string> ReadLocalFile(string filePath)
+        {
+            string result = string.Empty;
+
+            if (System.IO.File.Exists(filePath))
+            {
+                result = await FileExtensions.ReadAllTextAsync(filePath);
+            }
+            else
+            {
+                // TODO: Message file not exists
+            }
+
+            return result;
+        }
+
+        private async Task<string> ReadMetadataFromService(Uri uri)
+        {
+            string result = string.Empty;
+
+            Uri baseUrl = new Uri(generatorSettings.ServiceBaseUrl);
+
+            if (generatorSettings.UserCredentials == null)
+            {
+                try
+                {
+                    result = await MetadataHelper.GetMetadata(baseUrl);
+                    EventAggregator.GetEvent<EdmxFileChanged>().Publish(result);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    this.GetUserCredentials();
+                    result = await MetadataHelper.GetMetadata(baseUrl, generatorSettings.UserCredentials);
+                }
+            }
+
+            return result;
+        }
 
         #region Commands
 
@@ -156,41 +196,34 @@ namespace ODataTools.DtoGenerator.ViewModels
         /// <returns></returns>
         private async Task GenerateDataClasses()
         {
+            var dtoGeneratorService = Container.Resolve<IDtoGenerator>(ServiceNames.DtoGeneratorService);
+
+            string outputFile = Path.GetFileName(Path.ChangeExtension(generatorSettings.SourceEdmxFile, ".cs"));
+
+            string fileContent = string.Empty;
+
+            if (generatorSettings.IsFileModeEnabled)
+            {
+                fileContent = await ReadLocalFile(generatorSettings.SourceEdmxFile);
+            }
+            else
+            {
+                if (!String.IsNullOrEmpty(generatorSettings.ServiceBaseUrl))
+                {
+                    Uri baseUrl = new Uri(generatorSettings.ServiceBaseUrl);
+
+                    if (generatorSettings.UserCredentials == null)
+                    {
+                        fileContent = await MetadataHelper.GetMetadata(baseUrl);
+                        EventAggregator.GetEvent<EdmxFileChanged>().Publish(fileContent);
+                    }
+                }
+            }
+
             // Task.Run Etiquette and Proper Usage
             // http://blog.stephencleary.com/2013/10/taskrun-etiquette-and-proper-usage.html
             await Task.Run(() =>
             {
-                var dtoGeneratorService = Container.Resolve<IDtoGenerator>(ServiceNames.DtoGeneratorService);
-
-                string outputFile = Path.GetFileName(Path.ChangeExtension(generatorSettings.SourceEdmxFile, ".cs"));
-
-                string fileContent = string.Empty;
-
-                if (generatorSettings.IsFileModeEnabled)
-                {
-                    if (System.IO.File.Exists(generatorSettings.SourceEdmxFile))
-                    {
-                        fileContent = File.ReadAllText(generatorSettings.SourceEdmxFile);
-                    }
-                    else
-                    {
-                        // TODO: Message file not exists
-                    }
-                }
-                else
-                {
-                    if (!String.IsNullOrEmpty(generatorSettings.ServiceBaseUrl))
-                    {
-                        Uri baseUrl = new Uri(generatorSettings.ServiceBaseUrl);
-
-                        if (generatorSettings.UserCredentials == null)
-                        {
-                            fileContent = MetadataHelper.GetMetadata(baseUrl);
-                            EventAggregator.GetEvent<EdmxFileChanged>().Publish(fileContent);
-                        }
-                    }
-                }
-
                 var result = dtoGeneratorService.GenerateDtoClassesForModel(fileContent, generatorSettings, outputFile);
 
                 EventAggregator.GetEvent<DtoGeneratorFinished>().Publish(new DtoGeneratorFinishedEventArgs(DtoGeneratorMode.DtoGenerator, result));

@@ -26,6 +26,7 @@ namespace ODataTools.DtoGenerator.ViewModels
 
         private string DataSvcUtilExe = "DataSvcUtil.exe";
         private PropertyChangedObserver<DataSvcUtilGUISettings> settingsObserver = null;
+        private PropertyChangedObserver<DataSvcUtilGUISettings> settingsCommandExecuteChangedObserver = null;
 
         #endregion Members and Constants
 
@@ -51,6 +52,10 @@ namespace ODataTools.DtoGenerator.ViewModels
                 .RegisterHandler(nameof(this.Settings.Version), this.CanGenerateBindableObjects)
                 .RegisterHandler(nameof(this.Settings.GenerateBindableObjects), this.CanGenerateBindableObjects);
 
+            this.settingsCommandExecuteChangedObserver = new PropertyChangedObserver<DataSvcUtilGUISettings>(this.Settings)
+                .RegisterHandler(nameof(this.Settings.InputFile), this.RaiseCanExecuteChanged)
+                .RegisterHandler(nameof(this.Settings.OutputFile), this.RaiseCanExecuteChanged);
+
             this.DataSvcUtilGUIService = Container.Resolve<IDataSvcUtilGUIService>(ServiceNames.DataSvcUtilGUIService);        
         }
 
@@ -67,6 +72,11 @@ namespace ODataTools.DtoGenerator.ViewModels
             {
                 settings.CanGenerateBindableObjects = true;
             }
+        }
+
+        private void RaiseCanExecuteChanged(DataSvcUtilGUISettings settings)
+        {
+            ((DelegateCommand)this.GenerateDataClassesCommand).RaiseCanExecuteChanged();
         }
 
         #endregion Event-Handler
@@ -103,7 +113,7 @@ namespace ODataTools.DtoGenerator.ViewModels
             this.OpenEdmxFileCommand = new DelegateCommand(this.OpenEdmxFile);
             this.SelectOutputFileCommand = new DelegateCommand(this.SelectOutputFile);
             this.OpenOutputDirectoryCommand = new DelegateCommand(this.OpenOutputDirectory);
-            this.GenerateDataClassesCommand = DelegateCommand.FromAsyncHandler(this.GenerateDataClasses);
+            this.GenerateDataClassesCommand = DelegateCommand.FromAsyncHandler(this.GenerateDataClasses, this.GenerateDataClassesCanExecute);
         }
 
         /// <summary>
@@ -194,7 +204,7 @@ namespace ODataTools.DtoGenerator.ViewModels
         /// <returns></returns>
         private bool GenerateDataClassesCanExecute()
         {
-            return true;
+            return (!String.IsNullOrEmpty(this.Settings.InputFile) && !String.IsNullOrEmpty(this.Settings.OutputFile));
         }
 
         #endregion Commands

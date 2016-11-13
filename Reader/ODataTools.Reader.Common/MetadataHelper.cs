@@ -10,7 +10,7 @@ namespace ODataTools.Reader.Common
 {
     public static class MetadataHelper
     {
-        public static string GetMetadata(Uri uri)
+        public static async Task<string> GetMetadata(Uri uri)
         {
             string result = string.Empty;
 
@@ -20,16 +20,15 @@ namespace ODataTools.Reader.Common
                 {
                     client.BaseAddress = uri;
 
-                    using (HttpResponseMessage response = client.GetAsync("$metadata").Result)
+                    using (HttpResponseMessage response = await client.GetAsync("$metadata"))
                     {
                         switch (response.StatusCode)
                         {
                             case HttpStatusCode.Unauthorized:
-                                //result = GetMetadata(uri, );
-                                break;
+                                throw new UnauthorizedAccessException($"Error accessing {uri}");
                             case HttpStatusCode.OK:
                             default:
-                                result = response.Content.ReadAsStringAsync().Result;
+                                result = await response.Content.ReadAsStringAsync();
                                 break;
                         }
                     }
@@ -39,7 +38,7 @@ namespace ODataTools.Reader.Common
             return result;
         }
 
-        public static string GetMetadata(Uri uri, ICredentials credentials)
+        public static async Task<string> GetMetadata(Uri uri, ICredentials credentials)
         {
             string result = string.Empty;
 
@@ -53,10 +52,10 @@ namespace ODataTools.Reader.Common
 
                     client.BaseAddress = uri;
 
-                    using (HttpResponseMessage response = client.GetAsync("$metadata").Result)
+                    using (HttpResponseMessage response = await client.GetAsync("$metadata"))
                     {
                         //response.EnsureSuccessStatusCode();
-                        result = response.Content.ReadAsStringAsync().Result;
+                        result = await response.Content.ReadAsStringAsync();
                     }
                 }
             }

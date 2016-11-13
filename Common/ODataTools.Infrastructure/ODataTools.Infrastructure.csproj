@@ -60,6 +60,7 @@
     <Compile Include="Constants\ViewNames.cs" />
     <Compile Include="Events\UpdateStatusBarMessageEvent.cs" />
     <Compile Include="ExtensionMethods\CollectionExtensions.cs" />
+    <Compile Include="ExtensionMethods\FileExtensions.cs" />
     <Compile Include="ExtensionMethods\StringExtensions.cs" />
     <Compile Include="Interfaces\IFlyoutService.cs" />
     <Compile Include="Interfaces\IFlyoutView.cs" />
