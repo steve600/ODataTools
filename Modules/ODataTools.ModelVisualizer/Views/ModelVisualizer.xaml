@@ -3,6 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:triggerActions="clr-namespace:ODataTools.Core.TriggerActions;assembly=ODataTools.Core"
+             xmlns:views="clr-namespace:ODataTools.Reader.Common.Views;assembly=ODataTools.Reader.Common"
              xmlns:local="clr-namespace:ODataTools.ModelVisualizer.Views"
              xmlns:graphx="http://schemas.panthernet.ru/graphx/"
              xmlns:myGraphs="clr-namespace:ODataTools.ModelVisualizer.Graphs"
@@ -13,7 +16,24 @@
              lex:ResxLocalizationProvider.DefaultDictionary="Resources"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="800">
+
+    <i:Interaction.Triggers>
+
+        <prism:InteractionRequestTrigger SourceObject="{Binding UserCredentialsConfirmationRequest, Mode=OneWay}">
+            <!-- This PopupWindowAction has a custom view defined. When this action is executed the view will be shown inside a new window -->
+            <!-- Take into account that the view is created only once and will be reused each time the action is executed -->
+            <triggerActions:PopupMetroWindowAction IsModal="True"
+                                                   WindowStartupLocation="CenterOwner"
+                                                   WindowStyle="{StaticResource MetroWindowPopupStyle}">
+                <prism:PopupWindowAction.WindowContent>
+                    <views:UserCredentialsInput />
+                </prism:PopupWindowAction.WindowContent>
+            </triggerActions:PopupMetroWindowAction>
+        </prism:InteractionRequestTrigger>
+
+    </i:Interaction.Triggers>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -46,7 +66,7 @@
                         IsEnabled="{Binding ElementName=rdbEdmxFile, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox Width="330"
                      IsReadOnly="True"
-                     Text="{Binding Path=DataSvcUtilGUIService.Settings.InputFile, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                     Text="{Binding Path=InputFile, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <Button x:Name="btnOpenEdmxFile"
                     Command="{Binding OpenEdmxFileCommand}"
                     Margin="5,0,0,0"
@@ -72,14 +92,15 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         IsEnabled="{Binding ElementName=rdbEdmxUrl, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox Width="330" />
+                <TextBox Width="330" Text="{Binding Path=ServiceBaseUrl, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Margin="5,0,0,0"
-                        Style="{StaticResource AccentedSquareButtonStyle}">
+                        Style="{StaticResource AccentedSquareButtonStyle}"
+                        Command="{Binding GetMetadataFromServiceCommand}">
                     <Rectangle Width="20" Height="16"
                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill"
-                                         Visual="{StaticResource appbar_folder_open}" />
+                                         Visual="{StaticResource appbar_arrow_right}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
