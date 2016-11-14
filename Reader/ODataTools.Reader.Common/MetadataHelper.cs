@@ -10,6 +10,11 @@ namespace ODataTools.Reader.Common
 {
     public static class MetadataHelper
     {
+        /// <summary>
+        /// Read metadata directly from service
+        /// </summary>
+        /// <param name="uri">The base URL of the service (wihtout $metadata)</param>
+        /// <returns></returns>
         public static async Task<string> GetMetadata(Uri uri)
         {
             string result = string.Empty;
@@ -38,6 +43,12 @@ namespace ODataTools.Reader.Common
             return result;
         }
 
+        /// <summary>
+        /// Read metadata directly from service
+        /// </summary>
+        /// <param name="uri">The base URL of the service (wihtout $metadata)</param>
+        /// <param name="credentials">The user credentials.</param>
+        /// <returns></returns>
         public static async Task<string> GetMetadata(Uri uri, ICredentials credentials)
         {
             string result = string.Empty;
@@ -54,8 +65,15 @@ namespace ODataTools.Reader.Common
 
                     using (HttpResponseMessage response = await client.GetAsync("$metadata"))
                     {
-                        //response.EnsureSuccessStatusCode();
-                        result = await response.Content.ReadAsStringAsync();
+                        switch (response.StatusCode)
+                        {
+                            case HttpStatusCode.Unauthorized:
+                                throw new UnauthorizedAccessException($"Error accessing {uri}");
+                            case HttpStatusCode.OK:
+                            default:
+                                result = await response.Content.ReadAsStringAsync();
+                                break;
+                        }
                     }
                 }
             }

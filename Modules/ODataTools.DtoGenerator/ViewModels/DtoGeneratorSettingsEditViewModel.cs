@@ -16,6 +16,7 @@ using Prism.Interactivity.InteractionRequest;
 using Prism.Regions;
 using System;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -68,6 +69,11 @@ namespace ODataTools.DtoGenerator.ViewModels
 
         #endregion Interaction Requests
 
+        /// <summary>
+        /// Read local edmx file
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         private async Task<string> ReadLocalFile(string filePath)
         {
             string result = string.Empty;
@@ -84,7 +90,11 @@ namespace ODataTools.DtoGenerator.ViewModels
             return result;
         }
 
-        private async Task<string> ReadMetadataFromService(Uri uri)
+        /// <summary>
+        /// Read metadata information directly from service
+        /// </summary>
+        /// <returns></returns>
+        private async Task<string> ReadMetadataFromService()
         {
             string result = string.Empty;
 
@@ -95,13 +105,41 @@ namespace ODataTools.DtoGenerator.ViewModels
                 try
                 {
                     result = await MetadataHelper.GetMetadata(baseUrl);
-                    EventAggregator.GetEvent<EdmxFileChanged>().Publish(result);
                 }
                 catch (UnauthorizedAccessException ex)
                 {
                     this.GetUserCredentials();
-                    result = await MetadataHelper.GetMetadata(baseUrl, generatorSettings.UserCredentials);
+                    result = await this.ReadMetadataFromService(generatorSettings.UserCredentials);
                 }
+            }
+            else
+            {
+                result = await this.ReadMetadataFromService(generatorSettings.UserCredentials);
+            }
+
+            EventAggregator.GetEvent<EdmxFileChanged>().Publish(result);
+            return result;
+        }
+
+        /// <summary>
+        /// Read metadata information directy form servie with user credentials
+        /// </summary>
+        /// <param name="userCredentials"></param>
+        /// <returns></returns>
+        private async Task<string> ReadMetadataFromService(ICredentials userCredentials)
+        {
+            string result = String.Empty;
+
+            Uri baseUrl = new Uri(generatorSettings.ServiceBaseUrl);
+
+            try
+            {
+                result = await MetadataHelper.GetMetadata(baseUrl, generatorSettings.UserCredentials);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                this.GetUserCredentials();
+                result = await this.ReadMetadataFromService(generatorSettings.UserCredentials);
             }
 
             return result;
@@ -210,13 +248,7 @@ namespace ODataTools.DtoGenerator.ViewModels
             {
                 if (!String.IsNullOrEmpty(generatorSettings.ServiceBaseUrl))
                 {
-                    Uri baseUrl = new Uri(generatorSettings.ServiceBaseUrl);
-
-                    if (generatorSettings.UserCredentials == null)
-                    {
-                        fileContent = await MetadataHelper.GetMetadata(baseUrl);
-                        EventAggregator.GetEvent<EdmxFileChanged>().Publish(fileContent);
-                    }
+                    fileContent = await this.ReadMetadataFromService();
                 }
             }
 
