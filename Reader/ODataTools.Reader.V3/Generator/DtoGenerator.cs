@@ -211,6 +211,7 @@ namespace ODataTools.Reader.V3.Generator
             {
                 case DataClassOptions.DTO:
                     cls = RoslynHelper.CreateClass(entity.Name);
+                    cls = AddDtoConstructor(cls, entity.DeclaredKey);
                     break;
                 case DataClassOptions.INotifyPropertyChanged:
                     cls = RoslynHelper.CreateClass(entity.Name, "BindableBase");
@@ -233,6 +234,44 @@ namespace ODataTools.Reader.V3.Generator
             }
 
             return cls;
+        }
+
+        /// <summary>
+        /// Add constructor to DTO class
+        /// </summary>
+        /// <param name="cls">The class</param>
+        /// <param name="keyFileds">The key fields.</param>
+        /// <returns></returns>
+        private ClassDeclarationSyntax AddDtoConstructor(ClassDeclarationSyntax cls, IEnumerable<IEdmStructuralProperty> keyFileds)
+        {
+            ClassDeclarationSyntax result = null;
+
+            var parameterList = new SeparatedSyntaxList<ParameterSyntax>();
+            var assignmentList = new SyntaxList<StatementSyntax>();
+
+            if (keyFileds != null)
+            {                
+                foreach (var k in keyFileds)
+                {
+                    var p = SyntaxFactory.Parameter(SyntaxFactory.Identifier(k.Name.FirstCharacterToLower()))
+                                         .WithType(SyntaxFactory.ParseTypeName(this.GetDataType(k.Type)));
+                    parameterList = parameterList.Add(p);
+
+                    var a = SyntaxFactory.ExpressionStatement(SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, SyntaxFactory.IdentifierName(k.Name), SyntaxFactory.IdentifierName(k.Name.FirstCharacterToLower())));
+                    assignmentList = assignmentList.Add(a);
+                }
+            }
+
+            var ctor = SyntaxFactory.ConstructorDeclaration(new SyntaxList<AttributeListSyntax>(),
+                                                            SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+                                                            cls.Identifier,
+                                                            SyntaxFactory.ParameterList(parameterList),
+                                                            null,                                                            
+                                                            SyntaxFactory.Block(SyntaxFactory.Token(SyntaxKind.OpenBraceToken), assignmentList, SyntaxFactory.Token(SyntaxKind.CloseBraceToken)));
+
+            result = cls.AddMembers(ctor);
+
+            return result;
         }
 
         /// <summary>
@@ -334,7 +373,6 @@ namespace ODataTools.Reader.V3.Generator
                     // TODO Create type!
 
                     result = ct.Name;
-
                 }                
             }
 
