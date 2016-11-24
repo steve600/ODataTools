@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Data.Edm.Csdl;
+using System.Collections;
 
 namespace ODataTools.Reader.V3.Generator
 {
@@ -53,6 +54,8 @@ namespace ODataTools.Reader.V3.Generator
             {EdmPrimitiveTypeKind.DateTimeOffset, "DateTimeOffset"}
         };
 
+        IEdmModel model = null;
+
         #region CTOR
 
         public DtoGenerator()
@@ -72,7 +75,7 @@ namespace ODataTools.Reader.V3.Generator
         {
             Dictionary<FileInfo, string> result = new Dictionary<FileInfo, string>();
 
-            IEdmModel model = ModelReader.Parse(metaDataDocument);                       
+            model = ModelReader.Parse(metaDataDocument);
 
             if (model != null)
             {
@@ -88,7 +91,7 @@ namespace ODataTools.Reader.V3.Generator
 
                     switch (dtoGeneratorSettings.DataClassOptions)
                     {
-                        case DataClassOptions.DTO:                           
+                        case DataClassOptions.DTO:
                         case DataClassOptions.INotifyPropertyChanged:
                             result.AddRange(this.GenerateClasses(entities, dtoGeneratorSettings.DataClassOptions, dtoGeneratorSettings.GenerateAttributes, dtoGeneratorSettings.GenerateSingleFilePerDto,
                                                                  dtoGeneratorSettings.TargetNamespace, dtoGeneratorSettings.OutputPath, outputFileName));
@@ -182,7 +185,7 @@ namespace ODataTools.Reader.V3.Generator
             // Create BindableBase class
             switch (dtoGeneratorSettings.DataClassOptions)
             {
-                case DataClassOptions.INotifyPropertyChanged:       
+                case DataClassOptions.INotifyPropertyChanged:
                     result.AddRange(RoslynHelper.EditAndCopyNotifyPropertyChangedBaseClasses(dtoGeneratorSettings.TargetNamespace, dtoGeneratorSettings.OutputPath));
                     break;
                 case DataClassOptions.Proxy:
@@ -190,7 +193,7 @@ namespace ODataTools.Reader.V3.Generator
                     break;
                 default:
                     break;
-            }            
+            }
 
             return result;
         }
@@ -211,7 +214,7 @@ namespace ODataTools.Reader.V3.Generator
             {
                 case DataClassOptions.DTO:
                     cls = RoslynHelper.CreateClass(entity.Name);
-                    cls = AddDtoConstructor(cls, entity.DeclaredKey);
+                    cls = AddDtoCreateMethod(cls, entity.DeclaredProperties.Where(p => !p.Type.IsNullable && p.PropertyKind == EdmPropertyKind.Structural));
                     break;
                 case DataClassOptions.INotifyPropertyChanged:
                     cls = RoslynHelper.CreateClass(entity.Name, "BindableBase");
@@ -227,10 +230,10 @@ namespace ODataTools.Reader.V3.Generator
             if (generateWithAttributes && dataClassOption != DataClassOptions.Proxy)
             {
                 // Get attributes
-                AttributeListSyntax attributes = GenerateAttributes(entity);
+                var attributes = GenerateAttributes(entity);
 
                 if (attributes != null)
-                    cls = cls.AddAttributeLists(attributes);
+                    cls = cls.AddAttributeLists(attributes.ToArray());
             }
 
             return cls;
@@ -250,7 +253,7 @@ namespace ODataTools.Reader.V3.Generator
             var assignmentList = new SyntaxList<StatementSyntax>();
 
             if (keyFileds != null)
-            {                
+            {
                 foreach (var k in keyFileds)
                 {
                     var p = SyntaxFactory.Parameter(SyntaxFactory.Identifier(k.Name.FirstCharacterToLower()))
@@ -266,10 +269,56 @@ namespace ODataTools.Reader.V3.Generator
                                                             SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
                                                             cls.Identifier,
                                                             SyntaxFactory.ParameterList(parameterList),
-                                                            null,                                                            
+                                                            null,
                                                             SyntaxFactory.Block(SyntaxFactory.Token(SyntaxKind.OpenBraceToken), assignmentList, SyntaxFactory.Token(SyntaxKind.CloseBraceToken)));
 
             result = cls.AddMembers(ctor);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Add static create method to a DTO class
+        /// </summary>
+        /// <param name="cls">The DTO class.</param>
+        /// <param name="notNullableFields">The not nullable fields.</param>
+        /// <returns></returns>
+        public ClassDeclarationSyntax AddDtoCreateMethod(ClassDeclarationSyntax cls, IEnumerable<IEdmProperty> notNullableFields)
+        {
+            ClassDeclarationSyntax result = null;
+
+            var parameterList = new SeparatedSyntaxList<ParameterSyntax>();
+            var assignmentList = new SyntaxList<StatementSyntax>();
+
+            assignmentList = assignmentList.Add(SyntaxFactory.ParseStatement($"{cls.Identifier.Text.FirstCharacterToUpper()} {cls.Identifier.Text.FirstCharacterToLower()} = new {cls.Identifier.Text.FirstCharacterToUpper()}();"));
+
+            if (notNullableFields != null)
+            {
+                foreach (var n in notNullableFields)
+                {
+                    var p = SyntaxFactory.Parameter(SyntaxFactory.Identifier(n.Name.FirstCharacterToLower()))
+                                         .WithType(SyntaxFactory.ParseTypeName(this.GetDataType(n.Type)));
+                    parameterList = parameterList.Add(p);
+
+                    var a = SyntaxFactory.ExpressionStatement(SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, SyntaxFactory.IdentifierName($"{cls.Identifier.Text.FirstCharacterToLower()}.{n.Name}"), SyntaxFactory.IdentifierName(n.Name.FirstCharacterToLower())));
+                    assignmentList = assignmentList.Add(a);
+                }
+            }
+
+            assignmentList = assignmentList.Add(SyntaxFactory.ParseStatement($"return {cls.Identifier.Text.FirstCharacterToLower()};"));
+
+            var method = SyntaxFactory.MethodDeclaration(new SyntaxList<AttributeListSyntax>(),
+                                                         SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.StaticKeyword)),
+                                                         SyntaxFactory.ParseTypeName(cls.Identifier.Text),
+                                                         null,
+                                                         SyntaxFactory.Identifier("Create"),
+                                                         null,
+                                                         SyntaxFactory.ParameterList(parameterList),
+                                                         new SyntaxList<TypeParameterConstraintClauseSyntax>(),
+                                                         SyntaxFactory.Block(SyntaxFactory.Token(SyntaxKind.OpenBraceToken), assignmentList, SyntaxFactory.Token(SyntaxKind.CloseBraceToken)),
+                                                         null);
+
+            result = cls.AddMembers(method);
 
             return result;
         }
@@ -292,7 +341,7 @@ namespace ODataTools.Reader.V3.Generator
                 case DataClassOptions.INotifyPropertyChanged:
                     var props = RoslynHelper.CreateBindableProperty(property.Name, GetDataType(property.Type));
                     foreach (var p in props)
-                        result.Add(p);                    
+                        result.Add(p);
                     break;
                 case DataClassOptions.Proxy:
                     var proxyProps = RoslynHelper.CreateDtoProxyProperty(property.Name, GetDataType(property.Type));
@@ -312,20 +361,24 @@ namespace ODataTools.Reader.V3.Generator
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns>The generated attributes.</returns>
-        private AttributeListSyntax GenerateAttributes(IEdmEntityType entity)
+        private IList<AttributeListSyntax> GenerateAttributes(IEdmEntityType entity)
         {
-            // Add class attributes
-            AttributeListSyntax attributes = null;
+            IList<AttributeListSyntax> attributes = new List<AttributeListSyntax>();
+
+            // EntitySet attribute
+            var entitySet = this.GetEntitySet(entity);
+            if (!String.IsNullOrEmpty(entitySet))
+            {
+                attributes.Add(SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().Add(RoslynHelper.CreateAttribute("System.Data.Services.Common.EntitySetAttribute", $"(\"{entitySet}\")"))));
+            }
 
             // Attribute for the key fields
             var keyFields = GetKeyFieldsAsString(entity);
             if (!String.IsNullOrEmpty(keyFields))
             {
-                var keyList = new SeparatedSyntaxList<AttributeSyntax>();
-                keyList = keyList.Add(RoslynHelper.CreateAttribute("System.Data.Services.Common.DataServiceKeyAttribute", keyFields));
-                attributes = SyntaxFactory.AttributeList(keyList);
+                attributes.Add(SyntaxFactory.AttributeList(new SeparatedSyntaxList<AttributeSyntax>().Add(RoslynHelper.CreateAttribute("System.Data.Services.Common.DataServiceKeyAttribute", keyFields))));
             }
-
+            
             return attributes;
         }
 
@@ -367,13 +420,13 @@ namespace ODataTools.Reader.V3.Generator
             else
             {
                 if (type.IsComplex())
-                {                    
+                {
                     var ct = type.Definition as IEdmComplexType;
-                    
+
                     // TODO Create type!
 
                     result = ct.Name;
-                }                
+                }
             }
 
             return result;
@@ -391,6 +444,22 @@ namespace ODataTools.Reader.V3.Generator
             ClrDictionary.TryGetValue(type, out value);
 
             return value;
-        }        
+        }
+
+        /// <summary>
+        /// Get EntitySet for a given entity
+        /// </summary>The entity</param>
+        /// <returns></returns>
+        public string GetEntitySet(IEdmEntityType entity)
+        {
+            string result = string.Empty;
+
+            var entitySet = model?.EntityContainers()?.FirstOrDefault().Elements.First(c => c is IEdmEntitySet &&
+                                                                                            ((IEdmEntitySet)c).ElementType.Name.Equals(entity.Name));
+
+            result = entitySet?.Name;
+
+            return result;
+        }
     }
 }

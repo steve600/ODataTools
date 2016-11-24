@@ -35,6 +35,15 @@ namespace ODataTools.Reader.Common
             return result;
         }
 
+        public static ClassDeclarationSyntax CreateDTOClass(string className)
+        {
+            ClassDeclarationSyntax cls = CreateClass(className);
+
+
+
+            return cls;
+        }
+
         /// <summary>
         /// Create DTO proxy class
         /// </summary>
